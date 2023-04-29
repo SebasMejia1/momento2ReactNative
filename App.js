@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, Text, View } from "react-native";
+import Login from "./components/login";
+import Register from "./components/Register";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+const car = [{ plateNumber: "1" }, { brand: "mazda" }, { state: true }];
+// const rent = [
+//   { rentNumber: "1" },
+//   { username: user.username },
+//   { plateNumber: car.plateNumber },
+//   { rentDate: Date.now },
+// ];
+const Stack = createNativeStackNavigator();
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="login"
+          component={Login}
+          options={{ title: "Login" }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{ title: "Register" }}
+        ></Stack.Screen>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
