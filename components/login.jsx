@@ -2,23 +2,23 @@ import { Text, View } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { styles } from "../assets/styles/globals";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-let users;
+let users = [];
 
 export default function Login({ navigation, route }) {
-  useEffect(() => {
-    if (route.params?.post) {
-      users = route.params;
-    }
-  }, [route.params?.post]);
-
+  if (route.params) {
+    users = route.params;
+    // console.log(route.params);
+    console.log(users);
+  }
   const [loggin, setLoggin] = useState(true);
 
   const {
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       user: "",
@@ -28,9 +28,13 @@ export default function Login({ navigation, route }) {
 
   const onSubmit = (dataForm) => {
     const { user, password } = dataForm;
-    if (user == user) {
-      navigation.navigate("Home");
+    const logeado = users.find(
+      (u) => u.username == user && u.password == password
+    );
+    if (logeado) {
+      reset();
       setLoggin(true);
+      navigation.navigate("CreateCar", users);
     } else {
       setLoggin(false);
     }
@@ -90,12 +94,12 @@ export default function Login({ navigation, route }) {
         Usuario y/o contraseña incorrecto
       </Text>
       <Button
-        icon="send"
+        icon="login"
         mode="contained"
         onPress={handleSubmit(onSubmit)}
         style={{ margin: "25px", width: "200px" }}
       >
-        Enviar
+        Ingresar
       </Button>
       <i
         onClick={() => {

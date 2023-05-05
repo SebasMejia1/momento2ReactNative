@@ -1,16 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { StyleSheet, Text, View } from "react-native";
 import Login from "./components/login";
 import Register from "./components/Register";
+import CreateCar from "./components/cars";
+import ListOfCars from "./components/listOfCars";
+import RentCar from "./components/rentCar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const car = [{ plateNumber: "1" }, { brand: "mazda" }, { state: true }];
-// const rent = [
-//   { rentNumber: "1" },
-//   { username: user.username },
-//   { plateNumber: car.plateNumber },
-//   { rentDate: Date.now },
-// ];
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -20,6 +15,21 @@ export default function App() {
           name="login"
           component={Login}
           options={{ title: "Login" }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="RentCar"
+          component={RentCar}
+          options={{ title: "Renta un carro" }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="CreateCar"
+          component={CreateCar}
+          options={{ title: "Crear un carro en venta" }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="listOfCars"
+          component={ListOfCars}
+          options={{ title: "Lista de carros en venta" }}
         ></Stack.Screen>
         <Stack.Screen
           name="Register"

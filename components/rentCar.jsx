@@ -3,12 +3,12 @@ import { TextInput, Button } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import { styles } from "../assets/styles/globals";
 import { useState } from "react";
-const users = [
-  { username: "sebas", name: "Sebastian Mejia Sanchez", password: "12345" },
-];
-export default function Register({ navigation }) {
+let rent = [];
+export default function RentCar({ navigation, route }) {
   const [existente, setExistente] = useState();
-  const [texto, setTexto] = useState();
+  console.log(route.params);
+  const carInfo = route.params.rentCarInfo;
+  const users = route.params.users;
   const {
     handleSubmit,
     control,
@@ -16,32 +16,53 @@ export default function Register({ navigation }) {
     reset,
   } = useForm({
     defaultValues: {
+      rentNumber: "",
       username: "",
-      name: "",
-      password: "",
+      plateNumber: "",
     },
   });
 
   const onSubmit = (dataForm) => {
-    const { username, name, password } = dataForm;
-    const usuarioExistente = users.find((u) => u.username == username);
-    if (usuarioExistente) {
-      console.log("usuario ya existe, pruebe registrarse");
-      setTexto("usuario ya existe, pruebe registrarse, redirigiendo al login");
+    const { rentNumber, username, plateNumber } = dataForm;
+    const rentaExistente = rent.find((rent) => rent.numeroRenta == rentNumber);
+    if (rentaExistente) {
       setExistente(true);
+      return;
     } else {
-      setExistente(false);
-      setTexto("Usuario registrado con exito, redirigiendo al login");
-      reset();
-      users.push({ username: username, name: name, password: password });
-      console.log(username, name, password, users);
+      let usuarioValido = users.fidnd((user) => user.username == username);
+      if (!usuarioValido) {
+        setExistente(false);
+        rent.push({
+          numeroRenta: rentNumber,
+          usuario: username,
+          placa: plateNumber,
+          fechaRenta: new Date().toLocaleDateString(),
+          disponible: true,
+        });
+        console.log(rent);
+        reset();
+      }
     }
-    setTimeout(() => {
-      navigation.navigate("login", users);
-    }, 3000);
   };
   return (
     <View style={styles.container}>
+      <Controller
+        control={control}
+        rules={{
+          required: true,
+          pattern: /^[0-9]+$/g,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            label="Número de renta"
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            mode="outlined"
+          />
+        )}
+        name="rentNumber"
+      />
       <Controller
         control={control}
         rules={{
@@ -63,73 +84,61 @@ export default function Register({ navigation }) {
         control={control}
         rules={{
           required: true,
-          pattern: /^[A-Za-z-0-9]+$/g,
+          pattern: /^[0-9]+$/g,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            label="Nombre"
+            label="Número de placa"
             onBlur={onBlur}
             onChangeText={onChange}
-            value={value}
+            value={carInfo.platenumber}
             mode="outlined"
+            disabled
           />
         )}
-        name="name"
+        name="plateNumber"
       />
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-          pattern: /^[A-Za-z-0-9]+$/g,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            label="Contraseña"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            mode="outlined"
-          />
-        )}
-        name="password"
-      />
+      {errors.rentNumber?.type == "required" && (
+        <Text style={{ color: "red" }}>
+          Error, el dato numero de renta es requerido
+        </Text>
+      )}
+      {errors.rentNumber?.type == "pattern" && (
+        <Text style={{ color: "red" }}>
+          El numero de renta solo puede ser numeros
+        </Text>
+      )}
       {errors.username?.type == "required" && (
         <Text style={{ color: "red" }}>
           Error, el dato usuario es requerido
         </Text>
       )}
-      {errors.name?.type == "required" && (
-        <Text style={{ color: "red" }}>Error, el dato nombre es requerido</Text>
-      )}
-      {errors.password?.type == "required" && (
-        <Text style={{ color: "red" }}>
-          Error, el dato contraseña es requerido
-        </Text>
-      )}
       {errors.username?.type == "pattern" && (
         <Text style={{ color: "red" }}>El usuario solo puede ser letras</Text>
       )}
-      {errors.name?.type == "pattern" && (
-        <Text style={{ color: "red" }}>El nombre solo puede ser letras</Text>
+      {errors.plateNumber?.type == "required" && (
+        <Text style={{ color: "red" }}>Error, el dato placa es requerido</Text>
       )}
-      {errors.password?.type == "pattern" && (
-        <Text style={{ color: "red" }}>La contraseña debe ser solo letras</Text>
+      {errors.plateNumber?.type == "pattern" && (
+        <Text style={{ color: "red" }}>La placa solo puede ser numeros</Text>
       )}
-      <Text style={{ display: existente ? "block" : "none" }}>{texto}</Text>
+      <Text style={{ display: existente ? "block" : "none", color: "red" }}>
+        Número de renta existente, pruebe usar otro
+      </Text>
       <Button
-        icon="account"
+        icon="car"
         mode="contained"
         onPress={handleSubmit(onSubmit)}
         style={{ margin: "25px", width: "200px" }}
       >
-        Registrar
+        Rentar
       </Button>
       <i
         onClick={() => {
-          navigation.navigate("login");
+          navigation.navigate("CreateCar");
         }}
       >
-        ¿Ya tienes cuenta? Ingresa
+        Volver al inicio
       </i>
     </View>
   );
