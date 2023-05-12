@@ -6,7 +6,8 @@ import { useState } from "react";
 let rent = [];
 export default function RentCar({ navigation, route }) {
   const [existente, setExistente] = useState();
-  console.log(route.params);
+  const [texto, setTexto] = useState();
+  console.log(route.params, rent);
   const carInfo = route.params.rentCarInfo;
   const users = route.params.users;
   const {
@@ -27,11 +28,13 @@ export default function RentCar({ navigation, route }) {
     const rentaExistente = rent.find((rent) => rent.numeroRenta == rentNumber);
     if (rentaExistente) {
       setExistente(true);
+      setTexto("El numero de renta ya existe, pruebe con otro");
       return;
     } else {
-      let usuarioValido = users.fidnd((user) => user.username == username);
+      let usuarioValido = users.find((user) => user.username == username);
       if (!usuarioValido) {
         setExistente(false);
+        setTexto("Renta registrada con exito");
         rent.push({
           numeroRenta: rentNumber,
           usuario: username,
@@ -93,7 +96,6 @@ export default function RentCar({ navigation, route }) {
             onChangeText={onChange}
             value={carInfo.platenumber}
             mode="outlined"
-            disabled
           />
         )}
         name="plateNumber"
@@ -123,7 +125,7 @@ export default function RentCar({ navigation, route }) {
         <Text style={{ color: "red" }}>La placa solo puede ser numeros</Text>
       )}
       <Text style={{ display: existente ? "block" : "none", color: "red" }}>
-        Número de renta existente, pruebe usar otro
+        {texto}
       </Text>
       <Button
         icon="car"

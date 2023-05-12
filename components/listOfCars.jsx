@@ -8,7 +8,7 @@ function ListOfCars({ cars, users, navigation }) {
     rentCarInfo.brand = item.brand;
     rentCarInfo.state = item.state;
     console.log(cars, users);
-    navigation.navigate("RentCar", {rentCarInfo, users});
+    navigation.navigate("RentCar", { rentCarInfo, users });
   };
   const renderItem = ({ item }) => {
     return (

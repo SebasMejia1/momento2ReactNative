@@ -28,17 +28,18 @@ export default function Register({ navigation }) {
     if (usuarioExistente) {
       console.log("usuario ya existe, pruebe registrarse");
       setTexto("usuario ya existe, pruebe registrarse, redirigiendo al login");
+      setTimeout(() => {
+        navigation.navigate("login", users);
+      }, 3000);
       setExistente(true);
     } else {
       setExistente(false);
-      setTexto("Usuario registrado con exito, redirigiendo al login");
+      setTexto("Usuario registrado con exito");
       reset();
       users.push({ username: username, name: name, password: password });
       console.log(username, name, password, users);
-    }
-    setTimeout(() => {
       navigation.navigate("login", users);
-    }, 3000);
+    }
   };
   return (
     <View style={styles.container}>
